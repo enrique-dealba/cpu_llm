@@ -4,7 +4,7 @@ from llama_cpp import Llama
 from utils import parse_response
 
 # Flask object
-app = Flask("CPU LLM Server")
+app = Flask("LLM CPU Server")
 model = None
 
 @app.route('/llm', methods=['POST'])
