@@ -3,10 +3,10 @@ from flask import Flask, request, jsonify
 from llama_cpp import Llama
 
 # Create a Flask object
-app = Flask("Llama server")
+app = Flask("CPU LLM Server")
 model = None
 
-@app.route('/llama', methods=['POST'])
+@app.route('/llm', methods=['POST'])
 def generate_response():
     global model
 
@@ -38,8 +38,11 @@ def generate_response():
                 model = Llama(model_path=model_path)
             
             output = model(prompt, max_tokens=max_tokens, echo=True)
+
+            print("Pre json type:", type(output))
+            response = output["choices"][0]["text"]
             
-            return jsonify(output)
+            return jsonify(response)
 
         else:
             return jsonify({"error": "Missing required parameters"}), 400
