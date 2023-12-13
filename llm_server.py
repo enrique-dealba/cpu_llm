@@ -3,7 +3,7 @@ from llama_cpp import Llama
 
 from utils import parse_response
 
-# Create a Flask object
+# Flask object
 app = Flask("CPU LLM Server")
 model = None
 
@@ -13,7 +13,7 @@ def generate_response():
 
     try:
         data = request.get_json()
-        # Check if the required fields are present in the JSON data
+
         if 'user_message' in data:
             user_message = data['user_message']
 
@@ -27,13 +27,12 @@ def generate_response():
             else:
                 max_tokens = 500
 
-            # Prompt creation
             prompt = f"""<s>[INST] <<SYS>>
             {system_message}
             <</SYS>>
             {user_message} [/INST]"""
             
-            # Create the model if it was not previously created
+            # Creates model if wasn't previously created
             if model is None:
                 model_path = "/home/edealba/Testing/TestingLLMs/models/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/mistral-7b-instruct-v0.1.Q5_K_M.gguf"
                 model = Llama(model_path=model_path)
