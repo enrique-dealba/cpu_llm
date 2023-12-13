@@ -34,8 +34,9 @@ def generate_response():
             
             # Creates model if wasn't previously created
             if model is None:
-                model_path = "/home/edealba/Testing/TestingLLMs/models/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/mistral-7b-instruct-v0.1.Q5_K_M.gguf"
-                model = Llama(model_path=model_path)
+                model_path_1 = "/home/edealba/Testing/TestingLLMs/models/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/mistral-7b-instruct-v0.1.Q5_K_M.gguf"
+                model_path_2 = "./mistral-7b-instruct-v0.1.Q5_K_M.gguf"
+                model = Llama(model_path=model_path_2)
             
             output = model(prompt, max_tokens=max_tokens, echo=True)
 
