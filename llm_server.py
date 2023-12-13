@@ -1,6 +1,7 @@
-
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 from llama_cpp import Llama
+
+from utils import parse_response
 
 # Create a Flask object
 app = Flask("CPU LLM Server")
@@ -39,9 +40,9 @@ def generate_response():
             
             output = model(prompt, max_tokens=max_tokens, echo=True)
 
-            print("Pre json type:", type(output))
-            response = output["choices"][0]["text"]
-            
+            llm_text = output["choices"][0]["text"]
+            response = parse_response(llm_text)
+
             return jsonify(response)
 
         else:
