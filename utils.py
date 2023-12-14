@@ -19,6 +19,13 @@ def parse_response(text: str):
 
     return parsed_str.strip()
 
+def create_prompt(system_message: str, user_message: str):
+    """Creates prompt text from system and user messages."""
+    return f"""<s>[INST] <<SYS>>
+{system_message}
+<</SYS>>
+{user_message} [/INST]"""
+
 def num_tokens(string: str, encoding_name: str = "cl100k_base") -> int:
     """Returns the number of tokens in a text string."""
     encoding = tiktoken.get_encoding(encoding_name)

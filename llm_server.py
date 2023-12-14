@@ -3,70 +3,45 @@ from langchain.chains import LLMChain
 from langchain.llms import LlamaCpp
 from llama_cpp import Llama
 
-from utils import parse_response
+from config import (DEFAULT_SYSTEM_MESSAGE, MAX_TOKENS, MODEL_PATH,
+                    TEMPERATURE, TOP_P)
+from error_handlers import handle_exceptions
+from utils import create_prompt, parse_response
 
 # Flask object
-app = Flask("LLM CPU Server")
+app = Flask(__name__)
+
+# Global LLM instance
 llm = None
 
-@app.route('/llm', methods=['POST'])
-def generate_response():
+def get_llm(max_tokens: int = MAX_TOKENS):
+    """Initialize or return the existing LLM instance."""
     global llm
+    if llm is None:
+        llm = LlamaCpp(
+            model_path=MODEL_PATH,
+            temperature=TEMPERATURE,
+            max_tokens=max_tokens,
+            top_p=TOP_P,
+        )
+    return llm
 
-    try:
-        data = request.get_json()
+@app.route('/llm', methods=['POST'])
+@handle_exceptions
+def generate_response():
+    data = request.get_json()
+    user_message = data.get('user_message')
+    system_message = data.get('system_message', DEFAULT_SYSTEM_MESSAGE)
+    max_tokens = int(data.get('max_tokens', MAX_TOKENS))
 
-        if 'user_message' in data:
-            user_message = data['user_message']
+    if not user_message:
+        return jsonify({"error": "Missing required 'user_message' parameter"}), 400
+    
+    prompt = create_prompt(system_message, user_message)
+    llm = get_llm(max_tokens=max_tokens)
+    response = llm(prompt)
 
-            if 'system_message' in data:
-                system_message = data['system_message']
-            else:
-                system_message = "You are a helpful assistant"
-
-            if 'max_tokens' in data:
-                max_tokens = int(data['max_tokens'])
-            else:
-                max_tokens = 500
-
-            prompt = f"""<s>[INST] <<SYS>>
-            {system_message}
-            <</SYS>>
-            {user_message} [/INST]"""
-
-            use_langchain = True
-
-            model_path_1 = "/home/edealba/Testing/TestingLLMs/models/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/mistral-7b-instruct-v0.1.Q5_K_M.gguf"
-            model_path_2 = "./mistral-7b-instruct-v0.1.Q5_K_M.gguf"
-            
-            # # Creates model if wasn't previously created
-            # if llm is None:
-            #     llm = Llama(model_path=model_path_2)
-
-            response = None
-            if use_langchain:
-                if llm is None:
-                    llm = LlamaCpp(
-                        model_path=model_path_2,
-                        temperature=0.2,
-                        max_tokens=max_tokens,
-                        top_p=1,
-                        #callback_manager=callback_manager,
-                        #verbose=True,  # Verbose is required to pass to the callback manager
-                    )
-                response = llm(prompt)
-            else:
-                output = llm(prompt, max_tokens=max_tokens, echo=True)
-                llm_text = output["choices"][0]["text"]
-                response = parse_response(llm_text)
-
-            return jsonify(response)
-
-        else:
-            return jsonify({"error": "Missing required parameters"}), 400
-
-    except Exception as e:
-        return jsonify({"Error": str(e)}), 500
+    return jsonify(response)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8888, debug=True)

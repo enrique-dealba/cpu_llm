@@ -1,16 +1,13 @@
 import math
 import os
 import re
-import requests
 import time
+from typing import List, Optional, Union
 
-from typing import List, Union, Optional
-
-from utils import parse_response, get_tps
-
+import requests
 from dotenv import load_dotenv
 
-
+from utils import get_tps, parse_response
 
 load_dotenv()
 
