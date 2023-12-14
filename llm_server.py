@@ -1,15 +1,17 @@
 from flask import Flask, jsonify, request
+from langchain.chains import LLMChain
+from langchain.llms import LlamaCpp
 from llama_cpp import Llama
 
 from utils import parse_response
 
 # Flask object
 app = Flask("LLM CPU Server")
-model = None
+llm = None
 
 @app.route('/llm', methods=['POST'])
 def generate_response():
-    global model
+    global llm
 
     try:
         data = request.get_json()
@@ -31,17 +33,32 @@ def generate_response():
             {system_message}
             <</SYS>>
             {user_message} [/INST]"""
-            
-            # Creates model if wasn't previously created
-            if model is None:
-                model_path_1 = "/home/edealba/Testing/TestingLLMs/models/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/mistral-7b-instruct-v0.1.Q5_K_M.gguf"
-                model_path_2 = "./mistral-7b-instruct-v0.1.Q5_K_M.gguf"
-                model = Llama(model_path=model_path_2)
-            
-            output = model(prompt, max_tokens=max_tokens, echo=True)
 
-            llm_text = output["choices"][0]["text"]
-            response = parse_response(llm_text)
+            use_langchain = True
+
+            model_path_1 = "/home/edealba/Testing/TestingLLMs/models/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/mistral-7b-instruct-v0.1.Q5_K_M.gguf"
+            model_path_2 = "./mistral-7b-instruct-v0.1.Q5_K_M.gguf"
+            
+            # # Creates model if wasn't previously created
+            # if llm is None:
+            #     llm = Llama(model_path=model_path_2)
+
+            response = None
+            if use_langchain:
+                if llm is None:
+                    llm = LlamaCpp(
+                        model_path=model_path_2,
+                        temperature=0.2,
+                        max_tokens=max_tokens,
+                        top_p=1,
+                        #callback_manager=callback_manager,
+                        #verbose=True,  # Verbose is required to pass to the callback manager
+                    )
+                response = llm(prompt)
+            else:
+                output = llm(prompt, max_tokens=max_tokens, echo=True)
+                llm_text = output["choices"][0]["text"]
+                response = parse_response(llm_text)
 
             return jsonify(response)
 

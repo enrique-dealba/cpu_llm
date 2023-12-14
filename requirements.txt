@@ -1,2 +1,4 @@
 llama-cpp-python
 Flask
+tiktoken
+langchain
