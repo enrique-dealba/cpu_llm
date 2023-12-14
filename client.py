@@ -1,41 +1,50 @@
-import math
 import os
-import re
 import time
-from typing import List, Optional, Union
 
 import requests
 from dotenv import load_dotenv
 
-from utils import get_tps, parse_response
+from config import API_URL, DEFAULT_SYSTEM_MESSAGE, MAX_TOKENS
+from utils import get_tps
 
+# Loads environment variables
 load_dotenv()
 
-API_URL = os.getenv("API_URL")
+def generate_text(user_message: str,
+                  system_message: str = DEFAULT_SYSTEM_MESSAGE,
+                  max_tokens: int = MAX_TOKENS):
+    """Sends request to LLM server based on user prompt."""
+    payload = {
+        "user_message": user_message,
+        "system_message": system_message,
+        "max_tokens": max_tokens
+    }
 
-def generate_text(prompt: str):
-    payload = {"text": prompt}
-    response = requests.post(f"{API_URL}/llm", json=payload)
-    return response.json()
+    try:
+        response = requests.post(f"{API_URL}/llm", json=payload)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        print(f"An error occurred: {e}")
+        return None
 
 if __name__ == "__main__":
+    """Runs the client interface."""
     while True:
-        prompt = input("Prompt: ")
-        if prompt.lower() in ["quit", "exit"]:
+        user_input = input("Prompt (type 'quit' to exit): ")
+        if user_input.lower() in ["quit", "exit"]:
             print("Exiting the conversation.")
             break
-        
-        try:
-            start_time = time.time()
-            result = generate_text(prompt)
-            end_time = time.time()
-            elapsed_time = end_time - start_time
 
-            response = result['text']
-            response = parse_response(result)
+        start_time = time.time()
+        result = generate_text(user_input)
+        end_time = time.time()
+
+        if result and 'error' not in result:
+            response = result.get('text', "")
+            elapsed_time = end_time - start_time
 
             print(f"\nLLM Response: {response}")
             print(f"Tokens per second: {get_tps(response, elapsed_time)} t/s")
-
-        except requests.exceptions.RequestException as e:
-            print(f"An error occurred: {e}")
+        else:
+            print("Failed to get response from the server.")
