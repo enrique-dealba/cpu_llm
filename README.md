@@ -28,7 +28,7 @@ Below is a comparison of performance metrics across different CPU configurations
 These tests were conducted by running `benchmarks.py` and running a handful of prompts through the LLM Flask server and timing their responses. Note: A useful 'rule of thumb' is that in standard English text, one token is approximately equivalent to 4 letters. This means that 100 tokens are close to 75 English words.
 
 ## CPU Usage
-Here's an screenshot that shows an example of the CPU performance in `htop`, with most cores nearing full utilization when running `mistral-7b-instruct-v0.1.Q5_K_M` at `MAX` CPUs:
+Here's a screenshot that shows an example of the CPU performance in `htop`, with most cores nearing full utilization when running `mistral-7b-instruct-v0.1.Q5_K_M` at `MAX` CPUs:
 ![Screenshot of CPU usage](images/cpu_usage_max.png)
 
 ## Docker
