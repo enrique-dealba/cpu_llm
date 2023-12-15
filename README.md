@@ -29,7 +29,7 @@ These tests were conducted by running `benchmarks.py` and running a handful of p
 
 ## CPU Usage
 Here's an screenshot that shows an example of the CPU performance in `htop`, with most cores nearing full utilization when running `mistral-7b-instruct-v0.1.Q5_K_M` at `MAX` CPUs:
-![Screenshot of CPU usage](images/cpu_usage_max.jpg)
+![Screenshot of CPU usage](images/cpu_usage_max.png)
 
 ## Docker
 
