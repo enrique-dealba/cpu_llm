@@ -30,7 +30,7 @@ def generate_text(user_message: str,
 
 if __name__ == "__main__":
     """Runs the client interface."""
-    print("Note: type 'quit' to exit")
+    print("(type 'quit' to exit)")
     while True:
         user_input = input("Prompt: ")
         if user_input.lower() in ["quit", "exit"]:
@@ -43,8 +43,8 @@ if __name__ == "__main__":
 
         if response:
             elapsed_time = end_time - start_time
-            
+
             print(f"\nLLM Response: {response}")
-            print(f"Tokens per second: {get_tps(response, elapsed_time)} t/s")
+            print(f"Tokens per second: {get_tps(response, elapsed_time):.2f} t/s")
         else:
             print("Failed to get response from the server.")
