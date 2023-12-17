@@ -21,9 +21,9 @@ Below is a comparison of performance metrics across different CPU configurations
 | *Flask Server* | | | | | | | |
 | *mistral-7b-instruct-v0.1.Q5_K_M* | TPS (tokens/s) | 0.46 | 1.32 | 3.35 | 7.46 | 7.31 | 7.36 |
 | | Total time (s) | 559.3 | 178.9 | 73.72 | 37.13 | 34.76 | 35.07 |
-<!-- | **FastAPI Server** | | | | | | | |
-| **mistral-7b-instruct-v0.1.Q5_K_M** | TPS | 0.56 tok/s | 1.52 tok/s | ... | ... | ... | ... |
-| | Total time | 569.3s | 188.1s | ... | ... | ... | ... | -->
+| **FastAPI Server** | | | | | | | |
+| **mistral-7b-instruct-v0.1.Q5_K_M** | TPS (tokens/s) | 0.51 | 1.28 | 3.57 | 7.56 | 7.29 | 7.59 |
+| | Total time (s) | 484.68 | 208.17 | 67.52 | 33.22 | 36.50 | 28.35 |
 
 These tests were conducted by running `benchmarks.py` and running a handful of prompts through the LLM Flask server and timing their responses. Note: A useful 'rule of thumb' is that in standard English text, one token is approximately equivalent to 4 letters. This means that 100 tokens are close to 75 English words.
 
