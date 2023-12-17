@@ -1,16 +1,17 @@
 import time
-from typing import List
+from typing import Dict, List
 
 from dotenv import load_dotenv
 
 from client import generate_text
-from config import DEFAULT_SYSTEM_MESSAGE, MAX_TOKENS
-from utils import get_tps
+from fastapi_client import fast_generate_text
+from utils import TextGeneratorFunc, get_tps
 
 # Loads environment variables
 load_dotenv()
 
-def benchmark_prompts(prompts: List[str]):
+def benchmark_prompts(prompts: List[str],
+                      generate_text_fn: TextGeneratorFunc) -> Dict[str, float]:
     """Runs a series of prompts through the LLM and benchmarks response speed."""
     total_tps = 0.0
     total_time = 0.0
@@ -18,9 +19,7 @@ def benchmark_prompts(prompts: List[str]):
 
     for prompt in prompts:
         start_time = time.time()
-        response = generate_text(user_message=prompt,
-                                 system_message=DEFAULT_SYSTEM_MESSAGE,
-                                 max_tokens=MAX_TOKENS)
+        response = generate_text_fn(user_message=prompt)
         end_time = time.time()
 
         if response:
@@ -50,7 +49,12 @@ if __name__ == "__main__":
         "Write two Haikus about kubernetes: one arguing for and one against",
         "Write python Skyfield code to find the distance between Earth and Mars",
     ]
-
-    stats = benchmark_prompts(prompts)
+    use_flask: bool = False
+    stats = None
+    if use_flask:
+        stats = benchmark_prompts(prompts, generate_text_fn=generate_text)
+    else:
+        # We use the FastAPI server instead when not using Flask
+        stats = benchmark_prompts(prompts, generate_text_fn=fast_generate_text)
     print(f"Average Tokens per Second (TPS): {stats['avg_tps']:.2f}")
     print(f"Average Total Time Elapsed Per Response: {stats['avg_time']:.2f}")

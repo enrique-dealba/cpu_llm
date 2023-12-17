@@ -1,9 +1,10 @@
-import math
 import re
-from typing import List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import tiktoken
 
+# Typing for generate_text and fast_generate_text
+TextGeneratorFunc = Callable[[str, Optional[str], Optional[int]], Optional[Dict[str, Any]]]
 
 def parse_response(text: str):
     # Regex to find llm text after [/INST] token
