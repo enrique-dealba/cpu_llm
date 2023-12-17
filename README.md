@@ -50,8 +50,13 @@ Note: Replace [Your-Model-Path] with the actual path to your model weights.
 
 
 ### Running Docker Image
+To build the Flask image:
 ```sh
-docker build -t llm-server .
+docker build -f Dockerfile.flask -t llm-server .
+```
+Alternatively, to build the FastAPI image:
+```sh
+docker build -f Dockerfile.fastapi -t llm-server .
 ```
 ```sh
 docker run -p 8888:8888 llm-server
