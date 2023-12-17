@@ -2,5 +2,6 @@ llama-cpp-python
 Flask
 tiktoken
 langchain
+fastapi
 uvicorn
 pydantic
