@@ -14,7 +14,7 @@ Download LLM and move model weights to be in the `cpu_llm` directory. In our tes
 
 ## CPU Performance Metrics
 
-Below is a comparison of performance metrics across different CPU configurations for the `mistral-7b-instruct-v0.1.Q5_K_M` model using the Flask server `llm_server.py`.
+Below is a comparison of performance metrics across different CPU configurations for the `mistral-7b-instruct-v0.1.Q5_K_M` model using Flask and FastAPI servers `llm_server.py` and `fastapi_server.py`.
 
 | | **CPUs** | **16** | **32** | **64** | **128** | **192** | **MAX** |
 | --- | --- | --- | --- | --- | --- | --- | --- |
